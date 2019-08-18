@@ -1,16 +1,12 @@
 package riskservice
 
 import (
+	"context"
 	"fmt"
 	"time"
 
 	risk "github.com/dexter/grpcRiskStandalone/pkg/api/riskservice"
 )
-
-//RiskCalcHelperInterface : Risk calculation interface
-type RiskCalcHelperInterface interface {
-	CalculateRisk(req risk.RiskRequest) (risk.RiskResponse, error)
-}
 
 const fakeTenor = 10
 
@@ -19,8 +15,17 @@ type FakeRiskCalcHelper struct {
 	numberOfTenor int
 }
 
+//Check : for help check
+func (fake FakeRiskCalcHelper) Check(c context.Context, req *risk.HealthCheckRequest) (*risk.HealthCheckResponse, error) {
+	res := risk.HealthCheckResponse{
+		Status: risk.HealthCheckResponse_SERVING,
+	}
+
+	return &res, nil
+}
+
 //CalculateRisk : for fake risk calculation
-func (fake FakeRiskCalcHelper) CalculateRisk(req risk.RiskRequest) (risk.RiskResponse, error) {
+func (fake FakeRiskCalcHelper) CalculateRisk(c context.Context, req *risk.RiskRequest) (*risk.RiskResponse, error) {
 	timestampStr := fmt.Sprintf("%v", time.Now())
 	res := risk.RiskResponse{
 		Status:  risk.RiskResponse_SUCCESS,
@@ -38,5 +43,5 @@ func (fake FakeRiskCalcHelper) CalculateRisk(req risk.RiskRequest) (risk.RiskRes
 		res.Risk = append(res.Risk, &tenor)
 	}
 
-	return res, nil
+	return &res, nil
 }

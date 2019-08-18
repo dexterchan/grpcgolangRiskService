@@ -23,8 +23,16 @@ func main() {
 	defer conn.Close()
 	c := risk.NewRiskServiceClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
+
+	healthCheck := risk.HealthCheckRequest{
+		Service: "Testing",
+	}
+	res, _ := c.Check(ctx, &healthCheck)
+	if res.GetStatus() != risk.HealthCheckResponse_SERVING {
+		log.Panic("Health check failed")
+	}
 
 	req := risk.RiskRequest{
 		SystemDate:   "20180101",

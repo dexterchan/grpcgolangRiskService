@@ -9,10 +9,9 @@ import (
 )
 
 func TestHealthCheck(t *testing.T) {
+	numOfTenor := 10
 	ctx1 := context.Background()
-	helper := FakeRiskCalcHelper{
-		10,
-	}
+	helper := NewRiskServiceServer(numOfTenor)
 
 	tests := []struct {
 		name    string
@@ -46,10 +45,9 @@ func TestHealthCheck(t *testing.T) {
 }
 
 func TestCalculateRisk(t *testing.T) {
+	numOfTenor := 10
 	ctx1 := context.Background()
-	helper := FakeRiskCalcHelper{
-		10,
-	}
+	helper := NewRiskServiceServer(numOfTenor)
 
 	tests := []struct {
 		name    string
@@ -87,8 +85,8 @@ func TestCalculateRisk(t *testing.T) {
 				return
 			}
 			//Check Risk
-			if len(res.Risk) != helper.numberOfTenor {
-				t.Errorf("CalculateRisk() Risk tenor not match=%v, wanted %v", len(res.Risk), helper.numberOfTenor)
+			if len(res.Risk) != numOfTenor {
+				t.Errorf("CalculateRisk() Risk tenor not match=%v, wanted %v", len(res.Risk), numOfTenor)
 			}
 			//Check each tenor
 			for i, tenor := range res.Risk {

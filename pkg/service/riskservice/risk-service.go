@@ -15,6 +15,11 @@ type FakeRiskCalcHelper struct {
 	numberOfTenor int
 }
 
+//NewRiskServiceServer : creates ToDo service
+func NewRiskServiceServer(numTenor int) risk.RiskServiceServer {
+	return &FakeRiskCalcHelper{numTenor}
+}
+
 //Check : for help check
 func (fake FakeRiskCalcHelper) Check(c context.Context, req *risk.HealthCheckRequest) (*risk.HealthCheckResponse, error) {
 	res := risk.HealthCheckResponse{

@@ -7,7 +7,7 @@ import (
 	"log"
 	"time"
 
-	risk "github.com/dexter/grpcRiskStandalone/pkg/api/riskservice"
+	risk "github.com/dexter/grpcRiskStandalone/pkg/api/risk"
 	"google.golang.org/grpc"
 )
 
@@ -34,12 +34,15 @@ func main() {
 		log.Panic("Health check failed")
 	}
 
-	req := risk.RiskRequest{
-		SystemDate:   "20180101",
-		TradeId:      "B0001",
-		TradeMessage: "<trade></trade>",
+	req := risk.ValueRequest{
+		SystemDate:      "20180101",
+		TradeId:         "B0001",
+		TradeMessage:    "<trade></trade>",
+		OutputType:      risk.ValueRequest_ALL,
+		RunType:         risk.ValueRequest_FO,
+		WantedRiskSense: make([]string, 0),
 	}
-	res1, err := c.CalculateRisk(ctx, &req)
+	res1, err := c.Calculate(ctx, &req)
 	if err != nil {
 		log.Fatalf("Create failed: %v", err)
 	}

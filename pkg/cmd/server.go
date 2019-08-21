@@ -10,7 +10,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/dexter/grpcRiskStandalone/pkg/protocol/grpc"
-	risk "github.com/dexter/grpcRiskStandalone/pkg/service/riskservice"
+	risk "github.com/dexter/grpcRiskStandalone/pkg/service/risk"
 	v1 "github.com/dexter/grpcRiskStandalone/pkg/service/v1"
 )
 

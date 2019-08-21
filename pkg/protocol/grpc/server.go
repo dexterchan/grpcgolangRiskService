@@ -9,7 +9,7 @@ import (
 
 	"google.golang.org/grpc"
 
-	risk "github.com/dexter/grpcRiskStandalone/pkg/api/riskservice"
+	risk "github.com/dexter/grpcRiskStandalone/pkg/api/risk"
 	v1 "github.com/dexter/grpcRiskStandalone/pkg/api/v1"
 )
 

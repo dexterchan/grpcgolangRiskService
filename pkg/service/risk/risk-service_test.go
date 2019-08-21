@@ -1,10 +1,11 @@
-package riskservice
+package risk
 
 import (
 	"context"
+	"math"
 	"testing"
 
-	risk "github.com/dexter/grpcRiskStandalone/pkg/api/riskservice"
+	risk "github.com/dexter/grpcRiskStandalone/pkg/api/risk"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -52,47 +53,60 @@ func TestCalculateRisk(t *testing.T) {
 	tests := []struct {
 		name    string
 		ctx     context.Context
-		req     risk.RiskRequest
+		req     risk.ValueRequest
 		wantErr bool
 	}{
 		{
 			name: "basic",
 			ctx:  ctx1,
-			req: risk.RiskRequest{
-				SystemDate:   "20190101",
-				TradeId:      "A0001",
-				TradeMessage: "<trade></trade>",
+			req: risk.ValueRequest{
+				SystemDate:      "20190101",
+				TradeId:         "A0001",
+				TradeMessage:    "<trade></trade>",
+				OutputType:      risk.ValueRequest_ALL,
+				RunType:         risk.ValueRequest_FO,
+				WantedRiskSense: make([]string, 0),
 			},
 			wantErr: false,
 		},
 		{
 			name: "basic",
 			ctx:  ctx1,
-			req: risk.RiskRequest{
-				SystemDate:   "20180101",
-				TradeId:      "B0001",
-				TradeMessage: "<trade></trade>",
+			req: risk.ValueRequest{
+				SystemDate:      "20180101",
+				TradeId:         "B0001",
+				TradeMessage:    "<trade></trade>",
+				OutputType:      risk.ValueRequest_ALL,
+				RunType:         risk.ValueRequest_FO,
+				WantedRiskSense: make([]string, 0),
 			},
 			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			res, err := helper.CalculateRisk(tt.ctx, &tt.req)
+			res, err := helper.Calculate(tt.ctx, &tt.req)
 			//Check result
 			if (err != nil) != tt.wantErr {
-				t.Errorf("CalculateRisk() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("Calculate() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			//Check Risk
-			if len(res.Risk) != numOfTenor {
-				t.Errorf("CalculateRisk() Risk tenor not match=%v, wanted %v", len(res.Risk), numOfTenor)
-			}
+
 			//Check each tenor
-			for i, tenor := range res.Risk {
-				//expected value
-				expectedValue := float64(i+1) * 1000.00
-				assert.InDelta(t, expectedValue, tenor.GetValue(), 0.0000001)
+			for asset, assetSens := range res.AssetSensitivityLst {
+				for _, riskSens := range assetSens.SenseLst {
+
+					//Check Risk
+					if len(riskSens.Tenors) != numOfTenor {
+						t.Errorf("CalculateRisk() Risk tenor not match=%v, wanted %v", len(riskSens.Tenors), numOfTenor)
+					}
+					for i, tenor := range riskSens.Tenors {
+						//expected value
+						expectedValue := float64(i+1) * 1000.00 * math.Pow(-1.0, float64(asset))
+						assert.InDelta(t, expectedValue, tenor.GetValue(), 0.0000001)
+					}
+				}
+
 			}
 		})
 	}

@@ -10,6 +10,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/dexter/grpcRiskStandalone/pkg/protocol/grpc"
+	risk "github.com/dexter/grpcRiskStandalone/pkg/service/risk"
 	v1 "github.com/dexter/grpcRiskStandalone/pkg/service/v1"
 )
 
@@ -28,6 +29,22 @@ type Config struct {
 	DatastoreDBPassword string
 	// DatastoreDBSchema is schema of database
 	DatastoreDBSchema string
+}
+
+// RunRiskServerCmdLine : run the gRPC server
+func RunRiskServerCmdLine() error {
+	ctx := context.Background()
+	fmt.Println(ctx)
+	var port string
+	// get configuration
+	flag.StringVar(&port, "grpc-port", "", "gRPC port to bind")
+	flag.Parse()
+
+	fmt.Println("Starting server at port:", port)
+	numOfTenor := 10
+	riskAPI := risk.NewRiskServiceServer(numOfTenor)
+
+	return grpc.RunRiskServerServer(ctx, riskAPI, port)
 }
 
 // RunServer runs gRPC server and HTTP gateway

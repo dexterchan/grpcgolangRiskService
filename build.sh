@@ -1,3 +1,4 @@
+#!/bin/bash
 CURPATH=$(pwd)
 
 cd $CURPATH

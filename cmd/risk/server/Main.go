@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+
 	if err := cmd.RunRiskServerCmdLine(); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)

@@ -4,8 +4,10 @@ import (
 	"context"
 	"math"
 	"testing"
+	"time"
 
 	risk "github.com/dexter/grpcRiskStandalone/pkg/api/risk"
+	"github.com/golang/protobuf/ptypes"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -49,7 +51,8 @@ func TestCalculateRisk(t *testing.T) {
 	numOfTenor := 10
 	ctx1 := context.Background()
 	helper := NewRiskServiceServer(numOfTenor)
-
+	tt := time.Now().In(time.UTC)
+	timeStampProto, _ := ptypes.TimestampProto(tt)
 	tests := []struct {
 		name    string
 		ctx     context.Context
@@ -60,7 +63,7 @@ func TestCalculateRisk(t *testing.T) {
 			name: "basic",
 			ctx:  ctx1,
 			req: risk.ValueRequest{
-				SystemDate:      "20190101",
+				SystemDate:      timeStampProto,
 				TradeId:         "A0001",
 				TradeMessage:    "<trade></trade>",
 				OutputType:      risk.ValueRequest_ALL,
@@ -73,7 +76,7 @@ func TestCalculateRisk(t *testing.T) {
 			name: "basic",
 			ctx:  ctx1,
 			req: risk.ValueRequest{
-				SystemDate:      "20180101",
+				SystemDate:      timeStampProto,
 				TradeId:         "B0001",
 				TradeMessage:    "<trade></trade>",
 				OutputType:      risk.ValueRequest_ALL,

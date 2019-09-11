@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 eval export $(go env | grep GOPATH)
 PATH=$GOPATH/bin:$PATH
 mkdir -p pkg/api/v1

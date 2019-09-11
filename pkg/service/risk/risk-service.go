@@ -7,6 +7,7 @@ import (
 	"time"
 
 	risk "github.com/dexter/grpcRiskStandalone/pkg/api/risk"
+	"github.com/golang/protobuf/ptypes"
 )
 
 const fakeTenor = 10
@@ -34,10 +35,14 @@ func (fake FakeRiskCalcHelper) Check(c context.Context, req *risk.HealthCheckReq
 
 //CalculateRisk : for fake risk calculation
 func (fake FakeRiskCalcHelper) Calculate(c context.Context, req *risk.ValueRequest) (*risk.ValueResponse, error) {
-	timestampStr := fmt.Sprintf("%v", time.Now())
+	//timestampStr := fmt.Sprintf("%v", time.Now())
+
+	t := time.Now().In(time.UTC)
+	timeStampProto, _ := ptypes.TimestampProto(t)
+
 	res := risk.ValueResponse{
 		Status:              risk.ValueResponse_SUCCESS,
-		Time:                timestampStr,
+		Time:                timeStampProto,
 		TradeId:             "xxx",
 		AssetSensitivityLst: make([]*risk.ValueResponse_AssetSensivity, 0),
 	}

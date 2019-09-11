@@ -8,6 +8,7 @@ import (
 	"time"
 
 	risk "github.com/dexter/grpcRiskStandalone/pkg/api/risk"
+	"github.com/golang/protobuf/ptypes"
 	"google.golang.org/grpc"
 )
 
@@ -34,8 +35,11 @@ func main() {
 		log.Panic("Health check failed")
 	}
 
+	tt := time.Now().In(time.UTC)
+	timeStampProto, _ := ptypes.TimestampProto(tt)
+
 	req := risk.ValueRequest{
-		SystemDate:      "20180101",
+		SystemDate:      timeStampProto,
 		TradeId:         "B0001",
 		TradeMessage:    "<trade></trade>",
 		OutputType:      risk.ValueRequest_ALL,

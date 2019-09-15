@@ -13,3 +13,4 @@ mkdir -p bin/db
 cd bin/db
 go build ${CURPATH}/cmd/db/server/
 go build ${CURPATH}/cmd/db/client-grpc
+go build ${CURPATH}/cmd/db/client-rest

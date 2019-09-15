@@ -9,5 +9,9 @@ cd cmd/server
 go build .
 server -grpc-port=9090 -db-host=localhost:3306 -db-user=agileintelligence -db-password=password -db-schema=ppmtcourse
 
+server -grpc-port=9090 -http-port=8080 -db-host=localhost:3306 -db-user=agileintelligence -db-password=password -db-schema=ppmtcourse
+
 cd cmd/client-grpc
 client-grpc -server=localhost:9090
+
+client-rest -server=http://localhost:8080

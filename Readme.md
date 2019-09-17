@@ -4,12 +4,13 @@ https://medium.com/@amsokol.com/tutorial-how-to-develop-go-grpc-microservice-wit
 
 go test ./pkg/api/...
 
-
 cd cmd/server
 go build .
 server -grpc-port=9090 -db-host=localhost:3306 -db-user=agileintelligence -db-password=password -db-schema=ppmtcourse
 
 server -grpc-port=9090 -http-port=8080 -db-host=localhost:3306 -db-user=agileintelligence -db-password=password -db-schema=ppmtcourse
+
+server -grpc-port=9090 -http-port=8080 -db-host=localhost:3306 -db-user=agileintelligence -db-password=password -db-schema=ppmtcourse -log-level=-1 -log-time-format=2006-01-02T15:04:05.999999999Z07:00
 
 cd cmd/client-grpc
 client-grpc -server=localhost:9090

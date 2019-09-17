@@ -2,7 +2,7 @@ package grpc
 
 import (
 	"context"
-	"log"
+
 	"net"
 	"os"
 	"os/signal"
@@ -11,6 +11,8 @@ import (
 
 	risk "github.com/dexter/grpcRiskStandalone/pkg/api/risk"
 	v1 "github.com/dexter/grpcRiskStandalone/pkg/api/v1"
+	"github.com/dexter/grpcRiskStandalone/pkg/logger"
+	"github.com/dexter/grpcRiskStandalone/pkg/protocol/grpc/middleware"
 )
 
 //RunRiskServerServer : Run risk-service runs
@@ -29,8 +31,8 @@ func RunRiskServerServer(ctx context.Context, riskAPI risk.RiskServiceServer, po
 	go func() {
 		for range c {
 			// sig is a ^C, handle it
-			log.Println("shutting down gRPC server...")
-
+			//log.Println("shutting down gRPC server...")
+			logger.Log.Warn("shutting down gRPC server...")
 			server.GracefulStop()
 
 			<-ctx.Done()
@@ -38,7 +40,8 @@ func RunRiskServerServer(ctx context.Context, riskAPI risk.RiskServiceServer, po
 	}()
 
 	// start gRPC server
-	log.Println("starting gRPC server...")
+	//log.Println("starting gRPC server...")
+	logger.Log.Info("starting gRPC server...")
 	return server.Serve(listen)
 }
 
@@ -49,8 +52,14 @@ func RunServer(ctx context.Context, v1API v1.ToDoServiceServer, port string) err
 		return err
 	}
 
+	// gRPC server statup options
+	opts := []grpc.ServerOption{}
+
+	// add middleware
+	opts = middleware.AddLogging(logger.Log, opts)
+
 	// register service
-	server := grpc.NewServer()
+	server := grpc.NewServer(opts...)
 	v1.RegisterToDoServiceServer(server, v1API)
 
 	// graceful shutdown
@@ -59,7 +68,8 @@ func RunServer(ctx context.Context, v1API v1.ToDoServiceServer, port string) err
 	go func() {
 		for range c {
 			// sig is a ^C, handle it
-			log.Println("shutting down gRPC server...")
+			//log.Println("shutting down gRPC server...")
+			logger.Log.Warn("shutting down gRPC server...")
 
 			server.GracefulStop()
 
@@ -68,6 +78,7 @@ func RunServer(ctx context.Context, v1API v1.ToDoServiceServer, port string) err
 	}()
 
 	// start gRPC server
-	log.Println("starting gRPC server...")
+	//log.Println("starting gRPC server...")
+	logger.Log.Info("starting gRPC server...")
 	return server.Serve(listen)
 }

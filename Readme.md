@@ -25,13 +25,15 @@ server -grpc-port=9090 -http-port=8080 -db-host=localhost:3306 -db-user=agileint
 server -grpc-port=9090 -http-port=8080 -db-host=localhost:3306 -db-user=agileintelligence -db-password=password -db-schema=ppmtcourse -log-level=-1 -log-time-format=2006-01-02T15:04:05.999999999Z07:00
 ```
 
-###
-
-cd cmd/client-grpc
-client-grpc -server=localhost:9090
-
-client-rest -server=http://localhost:8080
+### Run grpc client
 
 ```
+cd cmd/client-grpc
+client-grpc -server=localhost:9090
+```
 
+### Run restful client
+
+```
+client-rest -server=http://localhost:8080
 ```
